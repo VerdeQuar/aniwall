@@ -39,11 +39,7 @@ pub enum Prefered {
 #[derive(Debug, thiserror::Error)]
 pub enum SetWallpaperError {
     #[error(transparent)]
-    IOError(
-        #[backtrace]
-        #[from]
-        std::io::Error,
-    ),
+    IOError(#[from] std::io::Error),
 }
 
 #[derive(Serialize, Deserialize, Debug, Eq, PartialEq, Hash, Clone, Ord, PartialOrd)]

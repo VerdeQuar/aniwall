@@ -7,6 +7,7 @@ use crate::{
 use core::str::FromStr;
 
 pub mod download;
+pub mod get;
 pub mod review;
 pub mod set;
 
@@ -30,6 +31,10 @@ pub enum Commands {
     Set {
         #[command(subcommand)]
         subcommand: SetSubcommand,
+    },
+    Get {
+        #[command(subcommand)]
+        subcommand: GetSubcommand,
     },
     Review {
         #[command(subcommand)]
@@ -64,6 +69,15 @@ pub enum SetSubcommand {
     File {
         path: String,
     },
+    Md5 {
+        md5: String,
+    },
+}
+
+#[derive(Subcommand, Debug)]
+pub enum GetSubcommand {
+    #[command(flatten)]
+    History(HistorySubcommand),
     Md5 {
         md5: String,
     },

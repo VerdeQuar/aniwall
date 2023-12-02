@@ -3,10 +3,10 @@
 #![feature(linked_list_cursors)]
 #![feature(async_closure)]
 #![feature(error_generic_member_access)]
-#![feature(provide_any)]
 
 use crate::cli::Cli;
 use crate::commands::download::download;
+use crate::commands::get::get;
 use crate::commands::review::review;
 use crate::commands::set::set;
 use crate::commands::Commands;
@@ -123,6 +123,7 @@ async fn main() -> Result<()> {
             .await?
         }
         Commands::Set { subcommand } => set(subcommand, wallpapers_dir, config_dir, history)?,
+        Commands::Get { subcommand } => get(subcommand, wallpapers_dir, config_dir, history)?,
         Commands::Review { subcommand } => {
             review(
                 width,

@@ -22,6 +22,7 @@ pub fn set(
         }
         SetSubcommand::Md5 { md5 } => {
             let wallpaper = Wallpaper::from_md5(&wallpapers_dir, md5)?;
+            wallpaper.set_prefered(&config_dir)?;
             history.push(wallpaper.md5);
         }
         SetSubcommand::Random { rating, category } => {
