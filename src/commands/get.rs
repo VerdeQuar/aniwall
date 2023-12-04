@@ -1,7 +1,7 @@
 use std::path::PathBuf;
 
 use super::GetSubcommand;
-use crate::wallpaper::{self, Wallpaper};
+use crate::wallpaper::Wallpaper;
 
 use crate::{commands::HistorySubcommand, wallpaper_history::History};
 use anyhow::Result;
