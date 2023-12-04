@@ -61,10 +61,15 @@ async fn main() -> Result<()> {
     if !wallpapers_dir.exists() {
         fs::create_dir_all(&wallpapers_dir).await?;
     }
+
     let config_dir = args
         .config_dir
         .or_else(|| project_dirs.map(|pd| pd.config_dir().to_path_buf()))
         .expect("Unclear config directory, specify it using --config-dir");
+
+    if !config_dir.exists() {
+        fs::create_dir_all(&config_dir).await?;
+    }
 
     let mut config = get_config(&config_dir)?;
 
