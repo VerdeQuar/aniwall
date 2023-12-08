@@ -83,9 +83,6 @@ async fn main() -> Result<()> {
     let (width, height) = size.expect(
         "Unknown screen width or height, please add screen_width and screen_height to config",
     );
-    config.screen_width = Some(width);
-    config.screen_height = Some(height);
-    save_config(&config_dir, &config)?;
 
     let history = get_history(&wallpapers_dir)?;
 
