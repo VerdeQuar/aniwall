@@ -82,10 +82,10 @@ pub struct Cli {
     pub command: Commands,
 
     #[arg(long, help = "Screen width")]
-    pub width: Option<u16>,
+    pub screen_width: Option<u16>,
 
     #[arg(long, help = "Screen height")]
-    pub height: Option<u16>,
+    pub screen_height: Option<u16>,
 
     #[arg(long)]
     pub cache_dir: Option<PathBuf>,

@@ -75,13 +75,13 @@ async fn main() -> Result<()> {
 
     let size: Option<_> = try {
         (
-            args.width.or(config.screen_width)?,
-            args.height.or(config.screen_height)?,
+            args.screen_width.or(config.screen_width)?,
+            args.screen_height.or(config.screen_height)?,
         )
     };
 
     let (width, height) = size.expect(
-        "Unknown width or height, if this is the first run, specify it using --width, and --height",
+        "Unknown screen width or height, please add screen_width and screen_height to config",
     );
     config.screen_width = Some(width);
     config.screen_height = Some(height);
