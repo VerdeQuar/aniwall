@@ -24,6 +24,12 @@
           aniwall = (rustPkgs.workspace.aniwall {});
           default = packages.aniwall;
         };
+        devShells.default = pkgs.mkShell {
+          packages = with pkgs; [
+            openssl
+            pkg-config
+          ];
+        };
       }
     );
 }
