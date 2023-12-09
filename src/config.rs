@@ -35,10 +35,3 @@ pub fn get_config(config_dir: &Path) -> Result<Config> {
         Ok(Config::new())
     }
 }
-
-pub fn save_config(config_dir: &Path, config: &Config) -> Result<()> {
-    if let Ok(json) = serde_json::to_string(&config) {
-        fs::write(config_dir.join("config.json").as_path(), json.as_bytes())?
-    }
-    Ok(())
-}

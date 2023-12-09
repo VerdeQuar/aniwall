@@ -12,7 +12,6 @@ use crate::commands::set::set;
 use crate::commands::Commands;
 use anyhow::Result;
 use config::get_config;
-use config::save_config;
 
 use crate::wallpaper_history::get_history;
 
