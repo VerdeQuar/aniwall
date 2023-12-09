@@ -25,6 +25,7 @@
           default = packages.aniwall;
         };
         devShells.default = pkgs.mkShell {
+          name = "aniwall";
           packages = with pkgs; [
             openssl
             pkg-config
