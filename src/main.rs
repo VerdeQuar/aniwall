@@ -70,7 +70,7 @@ async fn main() -> Result<()> {
         fs::create_dir_all(&config_dir).await?;
     }
 
-    let mut config = get_config(&config_dir)?;
+    let config = get_config(&config_dir)?;
 
     let size: Option<_> = try {
         (
