@@ -25,11 +25,7 @@ fn default_set_wallpaper_command() -> String {
 
 pub fn get_config(config_dir: &Path) -> Result<Config> {
     let path = config_dir.join("config.json");
-    let mut file = fs::OpenOptions::new()
-        .read(true)
-        .write(true)
-        .create(true)
-        .open(&path)?;
+    let mut file = fs::OpenOptions::new().read(true).create(true).open(&path)?;
 
     let mut contents = String::new();
     file.read_to_string(&mut contents)?;
