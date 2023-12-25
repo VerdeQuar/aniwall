@@ -4,20 +4,17 @@
 #![feature(async_closure)]
 #![feature(error_generic_member_access)]
 
+use std::process::{Command, Stdio};
+
 use crate::cli::Cli;
-use crate::commands::download::download;
-use crate::commands::get::get;
-use crate::commands::review::review;
-use crate::commands::set::set;
-use crate::commands::Commands;
+use crate::commands::{download::download, get::get, review::review, set::set, Commands};
 use anyhow::Result;
 use config::get_config;
 
 use crate::wallpaper_history::get_history;
 
 use clap::Parser;
-use directories::ProjectDirs;
-use directories::UserDirs;
+use directories::{ProjectDirs, UserDirs};
 
 use tokio::fs;
 
@@ -72,17 +69,47 @@ async fn main() -> Result<()> {
 
     let config = get_config(&config_dir)?;
 
-    let size: Option<_> = try {
-        (
-            args.screen_width.or(config.screen_width)?,
-            args.screen_height.or(config.screen_height)?,
-        )
-    };
+    let width: u16 = args
+        .screen_width
+        .or_else(|| {
+            let command = config.get_screen_width_command.clone();
 
-    let (width, height) = size.expect(
-        "Unknown screen width or height, please add screen_width and screen_height to config",
-    );
+            let words = shell_words::split(&command).ok()?;
+            let (command_name, command_args) = words.split_first()?;
+            let child = Command::new(command_name)
+                .args(command_args)
+                .stdout(Stdio::piped())
+                .spawn()
+                .ok()?;
 
+            String::from_utf8(child.wait_with_output().ok()?.stdout)
+                .ok()?
+                .trim()
+                .parse::<u16>()
+                .ok()
+        })
+        .expect("Invalid get screen width command, check your config");
+
+    let height: u16 = args
+        .screen_height
+        .or_else(|| {
+            let command = config.get_screen_height_command.clone();
+
+            let words = shell_words::split(&command).ok()?;
+            let (command_name, command_args) = words.split_first()?;
+            let child = Command::new(command_name)
+                .args(command_args)
+                .stdout(Stdio::piped())
+                .spawn()
+                .ok()?;
+
+            String::from_utf8(child.wait_with_output().ok()?.stdout)
+                .ok()?
+                .trim()
+                .parse::<u16>()
+                .ok()
+        })
+        .expect("Invalid get screen height command, check your config");
     let history = get_history(&wallpapers_dir)?;
 
     let token = CancellationToken::new();
