@@ -26,25 +26,25 @@ pub fn set(
             history.push(wallpaper.md5);
         }
         SetSubcommand::Random { rating, category } => {
-            let wallpapers: Vec<PathBuf> =
+            let mut wallpapers: Vec<PathBuf> =
                 glob(&format!("{}/*.json", wallpapers_dir.to_str().unwrap()))?
                     .filter_map(Result::ok)
                     .collect();
-            loop {
-                if let Some(path) = wallpapers.choose(&mut rand::thread_rng()) {
-                    let content = fs::read_to_string(path)?;
-                    let wallpaper: Wallpaper = serde_json::from_str(&content)?;
-                    let current = history.current();
+            wallpapers.shuffle(&mut rand::thread_rng());
 
-                    if (wallpaper.category == Some(category.to_owned()))
-                        && (wallpaper.rating == *rating)
-                        && (current.is_none() || current.is_some_and(|c| c != wallpaper.md5))
-                    {
-                        wallpaper.set_prefered(&config_dir)?;
-                        history.push(wallpaper.md5);
+            for path in wallpapers.iter() {
+                let content = fs::read_to_string(path)?;
+                let wallpaper: Wallpaper = serde_json::from_str(&content)?;
+                let current = history.current();
 
-                        break;
-                    }
+                if (wallpaper.category == Some(category.to_owned()))
+                    && (wallpaper.rating == *rating)
+                    && (current.is_none() || current.is_some_and(|c| c != wallpaper.md5))
+                {
+                    wallpaper.set_prefered(&config_dir)?;
+                    history.push(wallpaper.md5);
+
+                    break;
                 }
             }
         }
