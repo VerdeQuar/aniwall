@@ -3,6 +3,7 @@ use std::path::{Path, PathBuf};
 use std::fs;
 
 use super::SetSubcommand;
+use crate::rating::{Category, Rating};
 use crate::wallpaper::Wallpaper;
 use crate::wallpaper_history::save_history;
 use crate::{commands::HistorySubcommand, wallpaper::set_wallpaper, wallpaper_history::History};
@@ -37,8 +38,10 @@ pub fn set(
                 let wallpaper: Wallpaper = serde_json::from_str(&content)?;
                 let current = history.current();
 
-                if (wallpaper.category == Some(category.to_owned()))
-                    && (wallpaper.rating == *rating)
+                if ((wallpaper.category == Some(category.to_owned()))
+                    || (category.to_owned() == Category::Any))
+                    && ((wallpaper.rating == rating.to_owned())
+                        || (rating.to_owned() == Rating::Any))
                     && (current.is_none() || current.is_some_and(|c| c != wallpaper.md5))
                 {
                     wallpaper.set_prefered(&config_dir)?;

@@ -61,9 +61,9 @@ pub enum SetSubcommand {
     #[command(flatten)]
     History(HistorySubcommand),
     Random {
-        #[arg(long, value_parser = Rating::from_str, default_value_t = Rating::Safe)]
+        #[arg(long, value_parser = Rating::from_str, default_value_t = Rating::Any)]
         rating: Rating,
-        #[arg(long, value_parser = Category::from_str, default_value_t = Category::Liked)]
+        #[arg(long, value_parser = Category::from_str, default_value_t = Category::Any)]
         category: Category,
     },
     File {

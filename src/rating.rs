@@ -59,6 +59,7 @@ pub enum Rating {
     Safe,
     Questionable,
     Explicit,
+    Any,
 }
 
 #[derive(Debug, thiserror::Error)]
@@ -69,7 +70,7 @@ pub enum RatingParseError {
 impl std::fmt::Display for RatingParseError {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> Result<(), std::fmt::Error> {
         match self {
-            RatingParseError::VariantNotFound => write!(f, "Matching variant not found, must be one of: Safe|safe|s, Questionable|questionable|q, Explicit|explicit|e"),
+            RatingParseError::VariantNotFound => write!(f, "Matching variant not found, must be one of: Safe|safe|s, Questionable|questionable|q, Explicit|explicit|e, Any|any|a"),
         }
     }
 }
@@ -82,6 +83,7 @@ impl FromStr for Rating {
             "Safe" | "safe" | "s" => Ok(Rating::Safe),
             "Questionable" | "questionable" | "q" => Ok(Rating::Questionable),
             "Explicit" | "explicit" | "e" => Ok(Rating::Explicit),
+            "Any" | "any" | "a" => Ok(Rating::Any),
             _ => Err(RatingParseError::VariantNotFound),
         }
     }
@@ -103,6 +105,7 @@ impl fmt::Display for Rating {
             Rating::Safe => write!(f, "Safe"),
             Rating::Questionable => write!(f, "Questionable"),
             Rating::Explicit => write!(f, "Explicit"),
+            Rating::Any => write!(f, "Any"),
         }
     }
 }
@@ -112,6 +115,7 @@ pub enum Category {
     Liked,
     Disliked,
     Borked,
+    Any,
 }
 
 #[derive(Debug, thiserror::Error)]
@@ -124,7 +128,7 @@ impl std::fmt::Display for CategoryParseError {
         match self {
             CategoryParseError::VariantNotFound => write!(
                 f,
-                "Matching variant not found, must be one of: Liked, Disliked, Borked"
+                "Matching variant not found, must be one of: Liked|liked|l, Disliked|disliked|d, Borked|borked|b, Any|any|a"
             ),
         }
     }
@@ -138,6 +142,7 @@ impl FromStr for Category {
             "Liked" | "liked" | "l" => Ok(Category::Liked),
             "Disliked" | "disliked" | "d" => Ok(Category::Disliked),
             "Borked" | "borked" | "b" => Ok(Category::Borked),
+            "Any" | "any" | "a" => Ok(Category::Any),
             _ => Err(CategoryParseError::VariantNotFound),
         }
     }
@@ -149,6 +154,7 @@ impl fmt::Display for Category {
             Category::Liked => write!(f, "Liked"),
             Category::Disliked => write!(f, "Disliked"),
             Category::Borked => write!(f, "Borked"),
+            Category::Any => write!(f, "Any"),
         }
     }
 }
