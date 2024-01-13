@@ -78,6 +78,7 @@ pub async fn process_wallpapers(
     config_dir: PathBuf,
     screen_width: u16,
     screen_height: u16,
+    set_wallpaper_command_override: Option<String>,
 ) -> Result<()> {
     let (cropped_tx, mut cropped_rx): (Sender<Wallpaper>, Receiver<Wallpaper>) = mpsc::channel(10);
     let (process_tx, mut process_rx): (Sender<Wallpaper>, Receiver<Wallpaper>) = mpsc::channel(10);
@@ -94,6 +95,7 @@ pub async fn process_wallpapers(
         let prompt = prompt.clone();
         let config_dir = config_dir.clone();
         let wallpapers_dir = wallpapers_dir.clone();
+        let set_wallpaper_command_override = set_wallpaper_command_override.clone();
 
         async move {
             let _ = shutdown_tx2.clone();
@@ -107,11 +109,11 @@ pub async fn process_wallpapers(
                         loop {
                             if is_cropped {
                                 if let Some(crop_data) = &wallpaper.crop_data {
-                                    set_wallpaper(&config_dir, &crop_data.cropped_image_path)?;
+                                    set_wallpaper(&config_dir, &crop_data.cropped_image_path, set_wallpaper_command_override.clone())?;
                                 }
                                 wallpaper.prefered = Prefered::Cropped;
                             } else {
-                                set_wallpaper(&config_dir, &wallpaper.downloaded_image_path)?;
+                                set_wallpaper(&config_dir, &wallpaper.downloaded_image_path, set_wallpaper_command_override.clone())?;
                                 wallpaper.prefered = Prefered::Original;
                             }
 
@@ -126,7 +128,7 @@ pub async fn process_wallpapers(
                                     if let Some(md5) = history.prev() {
                                         Wallpaper::from_md5(&wallpapers_dir, &md5)
                                             ?
-                                            .set_prefered(&config_dir)
+                                            .set_prefered(&config_dir, set_wallpaper_command_override)
                                             ?;
                                     }
                                     token.cancel();
@@ -197,7 +199,7 @@ pub async fn process_wallpapers(
                 while let Some(mut wallpaper) = wallpapers_rx.recv().await {
 
                     let prompt_lock = prompt.lock().await;
-                    let is_cropped = wallpaper.set_prefered(&config_dir)? == Prefered::Cropped;
+                    let is_cropped = wallpaper.set_prefered(&config_dir, set_wallpaper_command_override.clone())? == Prefered::Cropped;
 
                     let mut history = history_clone.lock().await;
                     history.push(wallpaper.md5.clone());
@@ -214,7 +216,7 @@ pub async fn process_wallpapers(
                             if let Some(md5) = history.prev() {
                                 Wallpaper::from_md5(&wallpapers_dir, &md5)
                                     ?
-                                    .set_prefered(&config_dir)
+                                    .set_prefered(&config_dir, set_wallpaper_command_override)
                                     ?;
                             }
                             token.cancel();

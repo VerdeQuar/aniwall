@@ -16,14 +16,15 @@ pub fn set(
     wallpapers_dir: PathBuf,
     config_dir: PathBuf,
     mut history: History,
+    set_wallpaper_command_override: Option<String>,
 ) -> Result<()> {
     match subcommand {
         SetSubcommand::File { path } => {
-            set_wallpaper(&config_dir, Path::new(path))?;
+            set_wallpaper(&config_dir, Path::new(path), set_wallpaper_command_override)?;
         }
         SetSubcommand::Md5 { md5 } => {
             let wallpaper = Wallpaper::from_md5(&wallpapers_dir, md5)?;
-            wallpaper.set_prefered(&config_dir)?;
+            wallpaper.set_prefered(&config_dir, set_wallpaper_command_override)?;
             history.push(wallpaper.md5);
         }
         SetSubcommand::Random { rating, category } => {
@@ -44,7 +45,7 @@ pub fn set(
                         || (rating.to_owned() == Rating::Any))
                     && (current.is_none() || current.is_some_and(|c| c != wallpaper.md5))
                 {
-                    wallpaper.set_prefered(&config_dir)?;
+                    wallpaper.set_prefered(&config_dir, set_wallpaper_command_override)?;
                     history.push(wallpaper.md5);
 
                     break;
@@ -55,17 +56,20 @@ pub fn set(
             match history_subcommand {
                 HistorySubcommand::Previous => {
                     if let Some(md5) = history.prev() {
-                        Wallpaper::from_md5(&wallpapers_dir, &md5)?.set_prefered(&config_dir)?;
+                        Wallpaper::from_md5(&wallpapers_dir, &md5)?
+                            .set_prefered(&config_dir, set_wallpaper_command_override)?;
                     }
                 }
                 HistorySubcommand::Next => {
                     if let Some(md5) = history.next() {
-                        Wallpaper::from_md5(&wallpapers_dir, &md5)?.set_prefered(&config_dir)?;
+                        Wallpaper::from_md5(&wallpapers_dir, &md5)?
+                            .set_prefered(&config_dir, set_wallpaper_command_override)?;
                     }
                 }
                 HistorySubcommand::Current => {
                     if let Some(md5) = history.current() {
-                        Wallpaper::from_md5(&wallpapers_dir, &md5)?.set_prefered(&config_dir)?;
+                        Wallpaper::from_md5(&wallpapers_dir, &md5)?
+                            .set_prefered(&config_dir, set_wallpaper_command_override)?;
                     }
                 }
             };

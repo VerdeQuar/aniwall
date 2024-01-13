@@ -19,6 +19,7 @@ pub async fn review(
     config_dir: PathBuf,
     history: History,
     token: CancellationToken,
+    set_wallpaper_command_override: Option<String>,
 ) -> Result<()> {
     let (wallpapers_to_review_tx, wallpapers_to_review_rx) = mpsc::channel(10);
     let history_cloned = history.clone();
@@ -126,6 +127,7 @@ pub async fn review(
         config_dir,
         screen_width,
         screen_height,
+        set_wallpaper_command_override,
     )
     .await?;
     Ok(())

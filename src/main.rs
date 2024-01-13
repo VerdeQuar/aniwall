@@ -147,10 +147,17 @@ async fn main() -> Result<()> {
                 cache_dir,
                 history,
                 token_cloned,
+                args.set_wallpaper_command,
             )
             .await?
         }
-        Commands::Set { subcommand } => set(subcommand, wallpapers_dir, config_dir, history)?,
+        Commands::Set { subcommand } => set(
+            subcommand,
+            wallpapers_dir,
+            config_dir,
+            history,
+            args.set_wallpaper_command,
+        )?,
         Commands::Get { subcommand } => get(subcommand, wallpapers_dir, config_dir, history)?,
         Commands::Review { subcommand } => {
             review(
@@ -161,6 +168,7 @@ async fn main() -> Result<()> {
                 config_dir,
                 history,
                 token_cloned,
+                args.set_wallpaper_command,
             )
             .await?
         }

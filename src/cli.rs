@@ -95,4 +95,7 @@ pub struct Cli {
 
     #[arg(long)]
     pub wallpapers_dir: Option<PathBuf>,
+
+    #[arg(long)]
+    pub set_wallpaper_command: Option<String>,
 }

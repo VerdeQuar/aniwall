@@ -56,8 +56,13 @@ pub struct Wallpaper {
     pub crop_data: Option<CropData>,
 }
 
-pub fn set_wallpaper(config_dir: &Path, path: &Path) -> Result<()> {
-    let command = get_config(&config_dir)?.set_wallpaper_command;
+pub fn set_wallpaper(
+    config_dir: &Path,
+    path: &Path,
+    set_wallpaper_command_override: Option<String>,
+) -> Result<()> {
+    let command =
+        set_wallpaper_command_override.unwrap_or(get_config(&config_dir)?.set_wallpaper_command);
 
     let (command_name, command_args) = command
         .split_once(" ")
@@ -99,13 +104,25 @@ impl Wallpaper {
         let wallpaper = serde_json::from_str(&content)?;
         Ok(wallpaper)
     }
-    pub fn set_prefered(&self, config_dir: &Path) -> Result<Prefered> {
+    pub fn set_prefered(
+        &self,
+        config_dir: &Path,
+        set_wallpaper_command_override: Option<String>,
+    ) -> Result<Prefered> {
         match (&self.prefered, &self.crop_data) {
             (Prefered::Cropped, Some(crop_data)) => {
-                set_wallpaper(config_dir, &crop_data.cropped_image_path)?;
+                set_wallpaper(
+                    config_dir,
+                    &crop_data.cropped_image_path,
+                    set_wallpaper_command_override,
+                )?;
             }
             (Prefered::Original, _) | (Prefered::Cropped, None) => {
-                set_wallpaper(config_dir, &self.downloaded_image_path)?;
+                set_wallpaper(
+                    config_dir,
+                    &self.downloaded_image_path,
+                    set_wallpaper_command_override,
+                )?;
             }
         };
         Ok(self.prefered.to_owned())

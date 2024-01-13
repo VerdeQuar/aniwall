@@ -20,6 +20,7 @@ pub async fn download(
     cache_dir: PathBuf,
     history: History,
     token: CancellationToken,
+    set_wallpaper_command_override: Option<String>,
 ) -> Result<()> {
     let wallpaper_list = get_wallpaper_list(
         &cache_dir,
@@ -63,6 +64,7 @@ pub async fn download(
         config_dir,
         screen_width,
         screen_height,
+        set_wallpaper_command_override,
     )
     .await?;
     Ok(())
