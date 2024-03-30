@@ -21,11 +21,11 @@ impl Config {
     }
 }
 fn default_get_screen_width_command() -> String {
-    r#"bash -c 'hyprctl monitors | grep -oP "\d+(?=x.*@)"'"#.to_owned()
+    r#"bash -c 'hyprctl monitors | head -n 1 | grep -oP "\d+(?=x.*@)"'"#.to_owned()
 }
 
 fn default_get_screen_height_command() -> String {
-    r#"bash -c 'hyprctl monitors | grep -oP "(?<=x)\d+(?=@)"'"#.to_owned()
+    r#"bash -c 'hyprctl monitors | head -n 1 | grep -oP "(?<=x)\d+(?=@)"'"#.to_owned()
 }
 
 fn default_set_wallpaper_command() -> String {
