@@ -41,22 +41,25 @@ pub async fn review(
                 async move {
                     select! {
                         _ = token.cancelled() => {}
-                        _ = async move || -> Result<()> {
-                            for path in glob(&format!("{}/*.json", wallpapers_dir.to_str().unwrap()))?.filter_map(Result::ok) {
-                                let content =
-                                    fs::read_to_string(path)
-                                        .await?;
-                                let wallpaper: Wallpaper = serde_json::from_str(&content)?;
-                                if wallpaper.category == Some(Category::Liked) {
-                                    wallpapers_to_review_tx
-                                        .send(wallpaper)
-                                        .await
-                                        ?;
-                                }
+                        _ = async move {
+                                let result: Result<()> = try {
+                                    for path in glob(&format!("{}/*.json", wallpapers_dir.to_str().unwrap()))?.filter_map(Result::ok) {
+                                        let content =
+                                            fs::read_to_string(path)
+                                                .await?;
+                                        let wallpaper: Wallpaper = serde_json::from_str(&content)?;
+                                        if wallpaper.category == Some(Category::Liked) {
+                                            wallpapers_to_review_tx
+                                                .send(wallpaper)
+                                                .await
+                                                ?;
+                                        }
 
-                            }
-                            Ok(())
-                        }() => {}
+                                    }
+                                };
+                            result
+
+                    } => {}
                     }
                 }
             });
@@ -69,7 +72,7 @@ pub async fn review(
                 async move {
                     select! {
                         _ = token.cancelled() => {}
-                        _ = async move || -> Result<()> {
+                        _ = async move {let result: Result<()> = try {
                             for path in glob(&format!("{}/*.json", wallpapers_dir.to_str().unwrap()))?.filter_map(Result::ok) {
                                 let content =
                                     fs::read_to_string(path)
@@ -83,8 +86,9 @@ pub async fn review(
                                 }
 
                             }
-                            Ok(())
-                        }() => {}
+                            };
+                            result
+                        } => {}
                     }
                 }
             });
@@ -97,7 +101,7 @@ pub async fn review(
                 async move {
                     select! {
                         _ = token.cancelled() => {}
-                        _ = async move || -> Result<()> {
+                        _ = async move {let result: Result<()> = try {
                             for path in glob(&format!("{}/*.json", wallpapers_dir.to_str().unwrap()))?.filter_map(Result::ok) {
                                 let content =
                                     fs::read_to_string(path)
@@ -110,9 +114,9 @@ pub async fn review(
                                         ?;
                                 }
 
-                            }
-                            Ok(())
-                        }() => {}
+                            }};
+                            result
+                        } => {}
                     }
                 }
             });

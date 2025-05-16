@@ -164,7 +164,7 @@ pub async fn process_wallpapers(
                 biased;
                 _ = token.cancelled() => {}
                 _ = {
-                    async move || -> Result<()> {
+                    async move { let result: Result<()> = try {
                         while let Some(original) = cropped_rx.recv().await {
                             let wallpaper = crop_wallpaper(
                                 original,
@@ -178,10 +178,10 @@ pub async fn process_wallpapers(
                             drop(history);
 
                             process_tx.send(wallpaper).await?;
-                        }
-                        Ok(())
+                        }};
+                        result
                     }
-                }() => {}
+                } => {}
             }
         }
     });

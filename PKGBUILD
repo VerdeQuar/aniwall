@@ -11,13 +11,13 @@ prepare() {
 }
 
 build() {
-  export RUSTUP_TOOLCHAIN=stable
+  export RUSTUP_TOOLCHAIN=nightly
   export CARGO_TARGET_DIR=target
   cargo build --frozen --release --all-features
 }
 
 check() {
-  export RUSTUP_TOOLCHAIN=stable
+  export RUSTUP_TOOLCHAIN=nightly
   cargo test --frozen --all-features
 }
 
